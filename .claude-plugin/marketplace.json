@@ -1,5 +1,6 @@
 {
   "name": "obsidian-sandboxed",
+  "description": "Obsidian skills adapted for a sandboxed Claude Code setup",
   "owner": {
     "name": "Francisco Wilhelm",
     "url": "https://github.com/franciscowilhelm"
