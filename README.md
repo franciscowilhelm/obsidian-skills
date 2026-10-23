@@ -14,6 +14,7 @@ This is a fork of [kepano/obsidian-skills](https://github.com/kepano/obsidian-sk
 
 - Removed `defuddle`, `knap` and `json-canvas`. Defuddle fetches web pages from the shell, which the sandbox network proxy blocks for most hosts, and both Defuddle and Knap need a global `npm install`, which the sandbox can't write. Canvas isn't used.
 - `obsidian-cli` tells Claude to call the CLI only as a single plain command, and drops the plugin development commands (`eval`, `dev:*`) that the setup blocks.
+- `obsidian-markdown` and `obsidian-bases` verify their result with a plain CLI call (`read`, `links`, `base:query`) instead of reading vault files directly. Otherwise they are unchanged.
 - The plugin and marketplace are both named `obsidian-sandboxed` so they can be installed alongside the upstream `obsidian@obsidian-skills` without a name clash.
 
 ## Required Claude Code settings
