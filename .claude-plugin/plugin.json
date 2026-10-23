@@ -1,7 +1,7 @@
 {
   "name": "obsidian",
   "version": "1.0.1",
-  "description": "Create and edit Obsidian vault files including Markdown, Bases, and Canvas. Use when working with .md, .base, or .canvas files in an Obsidian vault.",
+  "description": "Create and edit Obsidian vault files including Markdown and Bases, and work with vaults via the Obsidian CLI. Use when working with .md or .base files in an Obsidian vault.",
   "author": {
     "name": "Steph Ango",
     "url": "https://stephango.com/"
@@ -12,7 +12,6 @@
     "obsidian",
     "markdown",
     "bases",
-    "canvas",
     "pkm",
     "notes"
   ]
