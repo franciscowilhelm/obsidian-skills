@@ -13,7 +13,7 @@ This is a fork of [kepano/obsidian-skills](https://github.com/kepano/obsidian-sk
 ### Changes from upstream
 
 - Removed `defuddle`, `knap` and `json-canvas`. Defuddle fetches web pages from the shell, which the sandbox network proxy blocks for most hosts, and both Defuddle and Knap need a global `npm install`, which the sandbox can't write. Canvas isn't used.
-- `obsidian-cli` tells Claude to call the CLI only as a single plain command, and drops the plugin development commands (`eval`, `dev:*`) that the setup blocks.
+- `obsidian-cli` tells Claude to call the CLI only as a single plain command, and drops the plugin development commands (`eval`, `dev:*`, `devtools`) that the setup blocks.
 - `obsidian-markdown` and `obsidian-bases` verify their result with a plain CLI call (`read`, `links`, `base:query`) instead of reading vault files directly. Otherwise they are unchanged.
 - The plugin and marketplace are both named `obsidian-sandboxed` so they can be installed alongside the upstream `obsidian@obsidian-skills` without a name clash.
 
@@ -27,7 +27,7 @@ The skills assume the settings in [`settings.example.json`](settings.example.jso
 | `sandbox.allowUnsandboxedCommands: false` | There's no "retry outside the sandbox" fallback. |
 | `sandbox.excludedCommands: ["obsidian *"]` | The only exception: plain `obsidian ...` calls run outside the sandbox, so they can reach the running app through its socket (`~/.obsidian-cli.sock`). |
 | `permissions.ask: ["Bash(obsidian *)"]` | Every CLI call waits for your approval. |
-| `permissions.deny` on `eval` and `dev:*` | Blocks the commands that run JavaScript inside Obsidian. They have full access to the machine, so they would be a way out of the sandbox. Both the `obsidian eval` and `obsidian vault=... eval` forms are covered. |
+| `permissions.deny` on `eval` and `dev*` | Blocks the commands that run JavaScript inside Obsidian. They have full access to the machine, so they would be a way out of the sandbox. `dev*` covers all `dev:` commands and `devtools`. Both the `obsidian eval` and `obsidian vault=... eval` forms are covered. |
 | `extraKnownMarketplaces`, `enabledPlugins` | Install the skills from this fork. |
 
 Add your own filesystem, network and credential rules under `sandbox` as needed. The skills don't depend on them.

@@ -7,8 +7,8 @@
     "deny": [
       "Bash(obsidian eval *)",
       "Bash(obsidian * eval *)",
-      "Bash(obsidian dev:*)",
-      "Bash(obsidian * dev:*)"
+      "Bash(obsidian dev*)",
+      "Bash(obsidian * dev*)"
     ]
   },
   "sandbox": {
