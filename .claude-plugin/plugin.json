@@ -1,12 +1,12 @@
 {
-  "name": "obsidian",
+  "name": "obsidian-sandboxed",
   "version": "1.0.1",
-  "description": "Create and edit Obsidian vault files including Markdown and Bases, and work with vaults via the Obsidian CLI. Use when working with .md or .base files in an Obsidian vault.",
+  "description": "Obsidian skills for a sandboxed Claude Code setup: Markdown, Bases, and approved plain Obsidian CLI calls. Use when working with .md or .base files in an Obsidian vault.",
   "author": {
     "name": "Steph Ango",
     "url": "https://stephango.com/"
   },
-  "repository": "https://github.com/kepano/obsidian-skills",
+  "repository": "https://github.com/franciscowilhelm/obsidian-skills",
   "license": "MIT",
   "keywords": [
     "obsidian",

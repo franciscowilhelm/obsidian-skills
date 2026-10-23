@@ -1,49 +1,6 @@
-Agent Skills for use with Obsidian.
+Agent Skills for Obsidian, adapted for a sandboxed Claude Code setup.
 
-These skills follow the [Agent Skills specification](https://agentskills.io/specification) so they can be used by any skills-compatible agent, including Claude Code, Codex, and Open Code.
-
-## Installation
-
-### Marketplace
-
-```
-/plugin marketplace add kepano/obsidian-skills
-/plugin install obsidian@obsidian-skills
-```
-
-### npx skills
-
-```
-npx skills add git@github.com:kepano/obsidian-skills.git
-```
-
-Instead of ssh, if you prefer to use https:
-
-```
-npx skills add https://github.com/kepano/obsidian-skills
-```
-
-### Manually
-
-#### Claude Code
-
-Add the contents of this repo to a `/.claude` folder in the root of your Obsidian vault (or whichever folder you're using with Claude Code). See more in the [official Claude Skills documentation](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).
-
-#### Codex
-
-Copy the `skills/` directory into your Codex skills path (typically `~/.codex/skills`). See the [Agent Skills specification](https://agentskills.io/specification) for the standard skill format.
-
-#### OpenCode
-
-Clone the entire repo into the OpenCode skills directory (`~/.opencode/skills/`):
-
-```sh
-git clone https://github.com/kepano/obsidian-skills.git ~/.opencode/skills/obsidian-skills
-```
-
-Do not copy only the inner `skills/` folder — clone the full repo so the directory structure is `~/.opencode/skills/obsidian-skills/skills/<skill-name>/SKILL.md`.
-
-OpenCode auto-discovers all `SKILL.md` files under `~/.opencode/skills/`. No changes to `opencode.json` or any config file are needed. Skills become available after restarting OpenCode.
+This is a fork of [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills). It keeps a reduced set of skills and changes them to work in a Claude Code setup where every shell command runs in the sandbox and only plain `obsidian` calls, each approved by the user, can reach the running Obsidian app. Use the upstream repo if you don't run Claude Code this way.
 
 ## Skills
 
@@ -51,4 +8,54 @@ OpenCode auto-discovers all `SKILL.md` files under `~/.opencode/skills/`. No cha
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [obsidian-markdown](skills/obsidian-markdown) | Create and edit [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown) (`.md`) with wikilinks, embeds, callouts, properties, and other Obsidian-specific syntax |
 | [obsidian-bases](skills/obsidian-bases)       | Create and edit [Obsidian Bases](https://help.obsidian.md/bases/syntax) (`.base`) with views, filters, formulas, and summaries                                                             |
-| [obsidian-cli](skills/obsidian-cli)           | Interact with Obsidian vaults via the [Obsidian CLI](https://help.obsidian.md/cli) including plugin and theme development                                                                  |
+| [obsidian-cli](skills/obsidian-cli)           | Read, search and manage notes in a running vault via the [Obsidian CLI](https://help.obsidian.md/cli), following the sandbox rules below                                                   |
+
+### Changes from upstream
+
+- Removed `defuddle`, `knap` and `json-canvas`. Defuddle fetches web pages from the shell, which the sandbox network proxy blocks for most hosts, and both Defuddle and Knap need a global `npm install`, which the sandbox can't write. Canvas isn't used.
+- `obsidian-cli` tells Claude to call the CLI only as a single plain command, and drops the plugin development commands (`eval`, `dev:*`) that the setup blocks.
+- The plugin and marketplace are both named `obsidian-sandboxed` so they can be installed alongside the upstream `obsidian@obsidian-skills` without a name clash.
+
+## Required Claude Code settings
+
+The skills assume the settings in [`settings.example.json`](settings.example.json). Merge them into `~/.claude/settings.json`. Claude can't do this for you, because the sandbox write-protects that file.
+
+| Setting | Effect |
+| --- | --- |
+| `sandbox.enabled`, `failIfUnavailable` | Every Bash command runs in the macOS Seatbelt sandbox, and Claude Code refuses to start without it. |
+| `sandbox.allowUnsandboxedCommands: false` | There's no "retry outside the sandbox" fallback. |
+| `sandbox.excludedCommands: ["obsidian *"]` | The only exception: plain `obsidian ...` calls run outside the sandbox, so they can reach the running app through its socket (`~/.obsidian-cli.sock`). |
+| `permissions.ask: ["Bash(obsidian *)"]` | Every CLI call waits for your approval. |
+| `permissions.deny` on `eval` and `dev:*` | Blocks the commands that run JavaScript inside Obsidian. They have full access to the machine, so they would be a way out of the sandbox. Both the `obsidian eval` and `obsidian vault=... eval` forms are covered. |
+| `extraKnownMarketplaces`, `enabledPlugins` | Install the skills from this fork. |
+
+Add your own filesystem, network and credential rules under `sandbox` as needed. The skills don't depend on them.
+
+### Why CLI calls must be plain
+
+A call leaves the sandbox only when its whole text matches `obsidian *`. Pipes (`| head`), redirects (`> file`, `2>&1`), chains (`cd ... &&`), `$(...)`, the full binary path, and calls from scripts or `make` targets all stay in the sandbox. There the CLI fails with "The CLI is unable to find Obsidian".
+
+This is intended. The only way out of the sandbox is a visible `obsidian` call that you approve. Don't widen it with `sandbox.network.allowUnixSockets` for the socket, `allowAppleEvents`, or broader `excludedCommands`. Each of these would let any sandboxed process, scripts included, drive Obsidian without approval.
+
+## Installation
+
+```
+/plugin marketplace add franciscowilhelm/obsidian-skills
+/plugin install obsidian-sandboxed@obsidian-sandboxed
+```
+
+You can also add the `extraKnownMarketplaces` and `enabledPlugins` entries from [`settings.example.json`](settings.example.json) yourself. If you used the upstream plugin before, disable `obsidian@obsidian-skills` so the skills don't load twice.
+
+The skills follow the [Agent Skills specification](https://agentskills.io/specification), so other agents can read them too, but the sandbox rules only apply to Claude Code.
+
+## Syncing with upstream
+
+The changes are kept small so upstream updates can be merged:
+
+```sh
+git remote add upstream https://github.com/kepano/obsidian-skills.git
+git fetch upstream
+git merge upstream/main
+```
+
+If upstream edits one of the removed skills, git reports a modify/delete conflict. Resolve it with `git rm` on that file.

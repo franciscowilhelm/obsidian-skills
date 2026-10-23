@@ -1,14 +1,14 @@
 {
-  "name": "obsidian-skills",
+  "name": "obsidian-sandboxed",
   "owner": {
-    "name": "Steph Ango",
-    "url": "https://stephango.com/"
+    "name": "Francisco Wilhelm",
+    "url": "https://github.com/franciscowilhelm"
   },
   "plugins": [
     {
-      "name": "obsidian",
+      "name": "obsidian-sandboxed",
       "source": "./",
-      "description": "Claude Skills for Obsidian",
+      "description": "Obsidian skills adapted for a sandboxed Claude Code setup",
       "version": "1.0.1"
     }
   ]

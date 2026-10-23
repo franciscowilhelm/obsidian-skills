@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "defaultMode": "auto",
+    "ask": [
+      "Bash(obsidian *)"
+    ],
+    "deny": [
+      "Bash(obsidian eval *)",
+      "Bash(obsidian * eval *)",
+      "Bash(obsidian dev:*)",
+      "Bash(obsidian * dev:*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "obsidian *"
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "obsidian-sandboxed": {
+      "source": {
+        "source": "github",
+        "repo": "franciscowilhelm/obsidian-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "obsidian-sandboxed@obsidian-sandboxed": true
+  }
+}
